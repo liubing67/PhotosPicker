@@ -30,7 +30,7 @@ import me.iwf.photopicker.utils.RequestPermissionsUtil;
 
 /**
  * 项目名称：LiuTestTwo
- * 类描述：
+ * 类描述：11111111
  * 创建人：liubing
  * 创建时间：2016/11/19 12:23
  * 修改人：Administrator
