@@ -64,7 +64,7 @@ public class ImageCaptureManager {
                 takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
                 takePictureIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);//设置Action为拍照
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        FileProvider.getUriForFile(mContext, "me.iwf.photopicker.fileprovider", photoFile));
+                        FileProvider.getUriForFile(mContext, "abing.liu.com.liutesttwo.fileprovider", photoFile));
             }
 
         }

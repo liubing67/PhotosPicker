@@ -60,6 +60,7 @@ public class GetPhotosActivity extends Activity {
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(4, OrientationHelper.VERTICAL));
         recyclerView.setAdapter(photoAdapter);
         onlyCameraUtil = new OnlyCameraUtil(GetPhotosActivity.this);
+
         findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() { ///压缩回调反应较慢
             @Override
             public void onClick(View v) {

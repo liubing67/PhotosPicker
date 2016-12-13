@@ -213,7 +213,7 @@ public class OnlyCameraUtil {
             } else {///选择从相机拍照的照片
                 if (!TextUtils.isEmpty(path)) {
                     if (crop) {
-                        startPhotoZoom(FileProvider.getUriForFile(activity, "me.iwf.photopicker.fileprovider",new File(path)));
+                        startPhotoZoom(FileProvider.getUriForFile(activity, "abing.liu.com.liutesttwo.fileprovider",new File(path)));
                     } else {
                         Glide.with(activity)
                                 .load(new File(path))
