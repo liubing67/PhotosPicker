@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import abing.liu.com.liutesttwo.R;
+import abing.liu.com.liutesttwo.pickerone.PhotoAdapter;
 import me.iwf.liu.utils.OnlyCameraUtil;
 import me.iwf.photopicker.PhotoPickerActivity;
-import me.iwf.photopicker.utils.PhotoPickerIntent;
 import me.iwf.photopicker.utils.RequestPermissionsUtil;
 
 /**
@@ -68,7 +68,7 @@ public class GetPhotosActivity extends Activity {
                 if (RequestPermissionsUtil.requestPer(GetPhotosActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE, 2)) {
                     onlyCameraUtil.getByAlbum(false);
                 } else {
-                    promptNoPermission(me.iwf.photopicker.R.string.no_permission_gallery);
+                    promptNoPermission(R.string.no_permission_gallery);
                 }
             }
         });
@@ -78,7 +78,7 @@ public class GetPhotosActivity extends Activity {
                 if (RequestPermissionsUtil.requestPer(GetPhotosActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE, 2)) {
                     onlyCameraUtil.getByAlbum(true);
                 } else {
-                    promptNoPermission(me.iwf.photopicker.R.string.no_permission_gallery);
+                    promptNoPermission(R.string.no_permission_gallery);
                 }
             }
         });
@@ -89,7 +89,7 @@ public class GetPhotosActivity extends Activity {
                 if (RequestPermissionsUtil.requestPer(GetPhotosActivity.this, Manifest.permission.CAMERA, 1)) {
                     onlyCameraUtil.takePhoto(1, false);
                 } else {
-                    promptNoPermission(me.iwf.photopicker.R.string.no_permission_camera);
+                    promptNoPermission(R.string.no_permission_camera);
                 }
             }
         });
@@ -100,21 +100,21 @@ public class GetPhotosActivity extends Activity {
                 if (RequestPermissionsUtil.requestPer(GetPhotosActivity.this, Manifest.permission.CAMERA, 2)) {
                     onlyCameraUtil.takePhoto(1, true);
                 } else {
-                    promptNoPermission(me.iwf.photopicker.R.string.no_permission_camera);
+                    promptNoPermission(R.string.no_permission_camera);
                 }
             }
         });
         findViewById(R.id.button5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (RequestPermissionsUtil.requestPer(GetPhotosActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE, 1)) {
-                    PhotoPickerIntent intent = new PhotoPickerIntent(GetPhotosActivity.this);
-                    intent.setPhotoCount(1);
-                    intent.setShowCamera(true);
-                    startActivityForResult(intent, REQUEST_CODE);
-                } else {
-                    promptNoPermission(me.iwf.photopicker.R.string.no_permission_gallery);
-                }
+//                if (RequestPermissionsUtil.requestPer(GetPhotosActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE, 1)) {
+//                    PhotoPickerIntent intent = new PhotoPickerIntent(GetPhotosActivity.this);
+//                    intent.setPhotoCount(1);
+//                    intent.setShowCamera(true);
+//                    startActivityForResult(intent, REQUEST_CODE);
+//                } else {
+//                    promptNoPermission(me.iwf.photopicker.R.string.no_permission_gallery);
+//                }
             }
         });
     }
@@ -134,19 +134,19 @@ public class GetPhotosActivity extends Activity {
                 onlyCameraUtil.onActivityResult(requestCode, resultCode, data, imageView, map, "22222222");
                 break;
             case 11:
-                List<String> photos = null;
-                if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-                    if (data != null) {
-                        photos = data.getStringArrayListExtra(PhotoPickerActivity.KEY_SELECTED_PHOTOS);
-                    }
-                    selectedPhotos.clear();
-
-                    if (photos != null) {
-
-                        selectedPhotos.addAll(photos);
-                    }
-                    photoAdapter.notifyDataSetChanged();
-                }
+//                List<String> photos = null;
+//                if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+//                    if (data != null) {
+//                        photos = data.getStringArrayListExtra(PhotoPickerActivity.KEY_SELECTED_PHOTOS);
+//                    }
+//                    selectedPhotos.clear();
+//
+//                    if (photos != null) {
+//
+//                        selectedPhotos.addAll(photos);
+//                    }
+//                    photoAdapter.notifyDataSetChanged();
+//                }
                 break;
         }
 
@@ -169,7 +169,7 @@ public class GetPhotosActivity extends Activity {
     }
 
     private void promptNoPermission(@StringRes int res) {
-        Snackbar.make(findViewById(android.R.id.content), res, Snackbar.LENGTH_LONG).setAction(me.iwf.photopicker.R.string.btn_setting, new View.OnClickListener() {
+        Snackbar.make(findViewById(android.R.id.content), res, Snackbar.LENGTH_LONG).setAction(R.string.btn_setting, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,

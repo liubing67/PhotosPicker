@@ -2,20 +2,12 @@ package me.iwf.photopicker.utils;
 
 //导入的包
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
-
-import me.iwf.photopicker.R;
 
 /**
  * 项目名称：LiuTest
@@ -81,13 +73,14 @@ public class RequestPermissionsUtil {
      * @param grantResults activity中的onRequestPermissionsResult方法自带的参数
      */
     public static void onRequestPermissionsResult(Activity activity, String permiss, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             requestPer(activity, permiss, requestCode);
         } else {
             Log.e("333333333333333", "没有获取到权限");
             isper = false;
+            Toast.makeText(activity,"请打开该权限", Toast.LENGTH_SHORT).show();
         }
         Log.e("333333333333333", "3333333333333");
     }
-
 }

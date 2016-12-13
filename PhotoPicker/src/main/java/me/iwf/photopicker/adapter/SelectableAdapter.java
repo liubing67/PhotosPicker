@@ -1,8 +1,10 @@
 package me.iwf.photopicker.adapter;
 
 import android.support.v7.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import me.iwf.photopicker.entity.Photo;
 import me.iwf.photopicker.entity.PhotoDirectory;
 import me.iwf.photopicker.event.Selectable;
@@ -13,7 +15,8 @@ public abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder>
   private static final String TAG = SelectableAdapter.class.getSimpleName();
 
   protected List<PhotoDirectory> photoDirectories;
-  protected List<Photo> selectedPhotos;
+  protected List<String> selectedPhotos;
+
   public int currentDirectoryIndex = 0;
 
 
@@ -24,13 +27,13 @@ public abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder>
 
 
   /**
-   * Indicates if the item at position position is selected
+   * Indicates if the item at position where is selected
    *
    * @param photo Photo of the item to check
    * @return true if the item is selected, false otherwise
    */
   @Override public boolean isSelected(Photo photo) {
-    return getSelectedPhotos().contains(photo);
+    return getSelectedPhotos().contains(photo.getPath());
   }
 
 
@@ -40,10 +43,10 @@ public abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder>
    * @param photo Photo of the item to toggle the selection status for
    */
   @Override public void toggleSelection(Photo photo) {
-    if (selectedPhotos.contains(photo)) {
-      selectedPhotos.remove(photo);
+    if (selectedPhotos.contains(photo.getPath())) {
+      selectedPhotos.remove(photo.getPath());
     } else {
-      selectedPhotos.add(photo);
+      selectedPhotos.add(photo.getPath());
     }
   }
 
@@ -85,7 +88,7 @@ public abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder>
   }
 
 
-  @Override public List<Photo> getSelectedPhotos() {
+  public List<String> getSelectedPhotos() {
     return selectedPhotos;
   }
 

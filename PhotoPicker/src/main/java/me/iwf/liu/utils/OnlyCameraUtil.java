@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -121,21 +122,6 @@ public class OnlyCameraUtil {
         intent.putExtra("noFaceDetection", true); // no face detection
         activity.startActivityForResult(intent, GET_BY_CROP);
     }
-//    File file=new File(Environment.getExternalStorageDirectory(), "/temp/"+System.currentTimeMillis() + ".jpg");
-//    if (!file.getParentFile().exists())file.getParentFile().mkdirs();
-//    Uri outputUri = FileProvider.getUriForFile(context, "com.jph.takephoto.fileprovider",file);
-//    Uri imageUri=FileProvider.getUriForFile(context, "com.jph.takephoto.fileprovider", new File("/storage/emulated/0/temp/1474960080319.jpg");//通过FileProvider创建一个content类型的Uri
-//    Intent intent = new Intent("com.android.camera.action.CROP");
-//    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//    intent.setDataAndType(imageUri, "image/*");
-//    intent.putExtra("crop", "true");
-//    intent.putExtra("aspectX", 1);
-//    intent.putExtra("aspectY", 1);
-//    intent.putExtra("scale", true);
-//    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);
-//    intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-//    intent.putExtra("noFaceDetection", true); // no face detection
-//    startActivityForResult(intent,1008);
     /**
      * 保存裁剪之后的图片数据
      *
@@ -213,14 +199,20 @@ public class OnlyCameraUtil {
             } else {///选择从相机拍照的照片
                 if (!TextUtils.isEmpty(path)) {
                     if (crop) {
-                        startPhotoZoom(FileProvider.getUriForFile(activity, "abing.liu.com.liutesttwo.fileprovider",new File(path)));
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            String authority = activity.getApplicationInfo().packageName + ".provider";
+                            startPhotoZoom(FileProvider.getUriForFile(activity, authority,new File(path)));
+                        } else {
+                            startPhotoZoom(Uri.fromFile(new File(path)));
+                        }
+
                     } else {
                         Glide.with(activity)
                                 .load(new File(path))
                                 .centerCrop()
                                 .thumbnail(0.1f)
-                                .placeholder(R.drawable.ic_photo_black_48dp)
-                                .error(R.drawable.ic_broken_image_black_48dp)
+                                .placeholder(R.drawable.__picker_ic_broken_image_black_48dp)
+                                .error(R.drawable.__picker_ic_photo_black_48dp)
                                 .into(imageView);
 //                   ImageDisplayer.getInstance(activity).displayBmp(imageView, null, path);//在空件中显示图片
                         if (map != null) {

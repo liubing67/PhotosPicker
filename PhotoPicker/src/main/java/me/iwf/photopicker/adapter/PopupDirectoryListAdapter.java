@@ -1,15 +1,17 @@
 package me.iwf.photopicker.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.bumptech.glide.Glide;
+
+import com.bumptech.glide.RequestManager;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import me.iwf.photopicker.R;
 import me.iwf.photopicker.entity.PhotoDirectory;
 
@@ -18,18 +20,13 @@ import me.iwf.photopicker.entity.PhotoDirectory;
  */
 public class PopupDirectoryListAdapter extends BaseAdapter {
 
-  private Context context;
 
   private List<PhotoDirectory> directories = new ArrayList<>();
+  private RequestManager glide;
 
-  private LayoutInflater mLayoutInflater;
-
-
-  public PopupDirectoryListAdapter(Context context, List<PhotoDirectory> directories) {
-    this.context = context;
+  public PopupDirectoryListAdapter(RequestManager glide, List<PhotoDirectory> directories) {
     this.directories = directories;
-
-    mLayoutInflater = LayoutInflater.from(context);
+    this.glide = glide;
   }
 
 
@@ -51,7 +48,8 @@ public class PopupDirectoryListAdapter extends BaseAdapter {
   @Override public View getView(int position, View convertView, ViewGroup parent) {
     ViewHolder holder;
     if (convertView == null) {
-      convertView = mLayoutInflater.inflate(R.layout.item_directory, parent, false);
+      LayoutInflater mLayoutInflater = LayoutInflater.from(parent.getContext());
+      convertView = mLayoutInflater.inflate(R.layout.__picker_item_directory, parent, false);
       holder = new ViewHolder(convertView);
       convertView.setTag(holder);
     } else {
@@ -63,23 +61,25 @@ public class PopupDirectoryListAdapter extends BaseAdapter {
     return convertView;
   }
 
-
   private class ViewHolder {
 
     public ImageView ivCover;
     public TextView tvName;
+    public TextView tvCount;
 
     public ViewHolder(View rootView) {
       ivCover = (ImageView) rootView.findViewById(R.id.iv_dir_cover);
       tvName  = (TextView)  rootView.findViewById(R.id.tv_dir_name);
+      tvCount = (TextView)  rootView.findViewById(R.id.tv_dir_count);
     }
 
     public void bindData(PhotoDirectory directory) {
-      Glide.with(context)
-          .load(directory.getCoverPath())
+      glide.load(directory.getCoverPath())
+          .dontAnimate()
           .thumbnail(0.1f)
           .into(ivCover);
       tvName.setText(directory.getName());
+      tvCount.setText(tvCount.getContext().getString(R.string.__picker_image_count, directory.getPhotos().size()));
     }
   }
 

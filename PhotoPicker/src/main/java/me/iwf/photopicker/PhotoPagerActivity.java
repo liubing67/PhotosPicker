@@ -13,8 +13,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import java.util.List;
+
 import me.iwf.photopicker.fragment.ImagePagerFragment;
+
+import static me.iwf.photopicker.PhotoPicker.KEY_SELECTED_PHOTOS;
+import static me.iwf.photopicker.PhotoPreview.EXTRA_CURRENT_ITEM;
+import static me.iwf.photopicker.PhotoPreview.EXTRA_PHOTOS;
+import static me.iwf.photopicker.PhotoPreview.EXTRA_SHOW_DELETE;
 
 /**
  * Created by donglua on 15/6/24.
@@ -23,21 +30,22 @@ public class PhotoPagerActivity extends AppCompatActivity {
 
   private ImagePagerFragment pagerFragment;
 
-  public final static String EXTRA_CURRENT_ITEM = "current_item";
-  public final static String EXTRA_PHOTOS = "photos";
-
   private ActionBar actionBar;
+  private boolean showDelete;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.activity_photo_pager);
+    setContentView(R.layout.__picker_activity_photo_pager);
 
     int currentItem = getIntent().getIntExtra(EXTRA_CURRENT_ITEM, 0);
     List<String> paths = getIntent().getStringArrayListExtra(EXTRA_PHOTOS);
+    showDelete = getIntent().getBooleanExtra(EXTRA_SHOW_DELETE, true);
 
-    pagerFragment =
-        (ImagePagerFragment) getSupportFragmentManager().findFragmentById(R.id.photoPagerFragment);
+    if (pagerFragment == null) {
+      pagerFragment =
+          (ImagePagerFragment) getSupportFragmentManager().findFragmentById(R.id.photoPagerFragment);
+    }
     pagerFragment.setPhotos(paths, currentItem);
 
     Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -45,33 +53,27 @@ public class PhotoPagerActivity extends AppCompatActivity {
 
     actionBar = getSupportActionBar();
 
-    actionBar.setDisplayHomeAsUpEnabled(true);
-    updateActionBarTitle();
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      actionBar.setElevation(25);
+    if (actionBar != null) {
+      actionBar.setDisplayHomeAsUpEnabled(true);
+      updateActionBarTitle();
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        actionBar.setElevation(25);
+      }
     }
 
 
-    pagerFragment.getViewPager().addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+    pagerFragment.getViewPager().addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
       @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         updateActionBarTitle();
       }
-
-      @Override public void onPageSelected(int i) {
-
-      }
-
-      @Override public void onPageScrollStateChanged(int i) {
-
-      }
     });
-
   }
 
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.menu_preview, menu);
+    if (showDelete){
+      getMenuInflater().inflate(R.menu.__picker_menu_preview, menu);
+    }
     return true;
   }
 
@@ -79,7 +81,7 @@ public class PhotoPagerActivity extends AppCompatActivity {
   @Override public void onBackPressed() {
 
     Intent intent = new Intent();
-    intent.putExtra(PhotoPickerActivity.KEY_SELECTED_PHOTOS, pagerFragment.getPaths());
+    intent.putExtra(KEY_SELECTED_PHOTOS, pagerFragment.getPaths());
     setResult(RESULT_OK, intent);
     finish();
 
@@ -100,22 +102,23 @@ public class PhotoPagerActivity extends AppCompatActivity {
 
       final String deletedPath =  pagerFragment.getPaths().get(index);
 
-      Snackbar snackbar = Snackbar.make(pagerFragment.getView(), R.string.deleted_a_photo,
+      Snackbar snackbar = Snackbar.make(pagerFragment.getView(), R.string.__picker_deleted_a_photo,
           Snackbar.LENGTH_LONG);
 
       if (pagerFragment.getPaths().size() <= 1) {
 
         // show confirm dialog
         new AlertDialog.Builder(this)
-            .setTitle(R.string.confirm_to_delete)
-            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            .setTitle(R.string.__picker_confirm_to_delete)
+            .setPositiveButton(R.string.__picker_yes, new DialogInterface.OnClickListener() {
               @Override public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                setResult(RESULT_OK);
-                finish();
+                pagerFragment.getPaths().remove(index);
+                pagerFragment.getViewPager().getAdapter().notifyDataSetChanged();
+                onBackPressed();
               }
             })
-            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            .setNegativeButton(R.string.__picker_cancel, new DialogInterface.OnClickListener() {
               @Override public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
               }
@@ -127,11 +130,10 @@ public class PhotoPagerActivity extends AppCompatActivity {
         snackbar.show();
 
         pagerFragment.getPaths().remove(index);
-        //pagerFragment.getViewPager().removeViewAt(index);
         pagerFragment.getViewPager().getAdapter().notifyDataSetChanged();
       }
 
-      snackbar.setAction(R.string.undo, new View.OnClickListener() {
+      snackbar.setAction(R.string.__picker_undo, new View.OnClickListener() {
         @Override public void onClick(View view) {
           if (pagerFragment.getPaths().size() > 0) {
             pagerFragment.getPaths().add(index, deletedPath);
@@ -150,8 +152,8 @@ public class PhotoPagerActivity extends AppCompatActivity {
   }
 
   public void updateActionBarTitle() {
-    actionBar.setTitle(
-        getString(R.string.image_index, pagerFragment.getViewPager().getCurrentItem() + 1,
+    if (actionBar != null) actionBar.setTitle(
+        getString(R.string.__picker_image_index, pagerFragment.getViewPager().getCurrentItem() + 1,
             pagerFragment.getPaths().size()));
   }
 }

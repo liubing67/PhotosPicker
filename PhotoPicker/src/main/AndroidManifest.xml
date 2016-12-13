@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.iwf.photopicker">
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <application android:allowBackup="true">
+
+    <application>
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="abing.liu.com.liutesttwo.fileprovider"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
+                android:resource="@xml/__picker_provider_paths" />
         </provider>
-        //  authorities需要换成包名,
-        /////OnlyCameraUtil 216行
-        ////ImageCaptureManager  67行
     </application>
 </manifest>

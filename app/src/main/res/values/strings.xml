@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">IPicker</string>
-    <string name="pick_photo">Pick Photo</string>
-    <string name="pick_photo_without_camera">Pick Photo Without Camera</string>
-    <string name="pick_one_photo">Pick One Photo</string>
+    <string name="pick_photo">选择图片</string>
+    <string name="pick_photo_without_camera">选择图片（不带拍照按钮且点击不预览图片）</string>
+    <string name="pick_one_photo">选择单张图片</string>
+    <string name="pick_photo_gif">选择gif图片</string>
+    <string name="multiple_pick_photo">多次进入PhotoPicker选择图片</string>
+    <string name="btn_setting">设置</string>
+    <string name="no_permission_camera">对不起, 没有拍照的权限。</string>
+    <string name="no_permission_gallery">对不起, 没有访问手机储存照片的权限。</string>
+    <string name="no_permission_lanya">对不起, 没有蓝牙权限。</string>
+    <string name="no_permission_dingwei">对不起, 没有定位权限。</string>
 </resources>

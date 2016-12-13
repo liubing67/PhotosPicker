@@ -12,13 +12,17 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+
+import com.bumptech.glide.Glide;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import me.iwf.photopicker.R;
 import me.iwf.photopicker.adapter.PhotoPagerAdapter;
 
@@ -93,7 +97,6 @@ public class ImagePagerFragment extends Fragment {
   }
 
 
-
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
@@ -115,19 +118,17 @@ public class ImagePagerFragment extends Fragment {
       thumbnailLeft   = bundle.getInt(ARG_THUMBNAIL_LEFT);
       thumbnailWidth  = bundle.getInt(ARG_THUMBNAIL_WIDTH);
       thumbnailHeight = bundle.getInt(ARG_THUMBNAIL_HEIGHT);
-
     }
 
-
-    mPagerAdapter = new PhotoPagerAdapter(getActivity(), paths);
-
+    mPagerAdapter = new PhotoPagerAdapter(Glide.with(this), paths);
   }
 
 
-  @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+  @Nullable
+  @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                     Bundle savedInstanceState) {
 
-    View rootView = inflater.inflate(R.layout.fragment_image_pager, container, false);
+    View rootView = inflater.inflate(R.layout.__picker_picker_fragment_image_pager, container, false);
 
     mViewPager = (ViewPager) rootView.findViewById(R.id.vp_photos);
     mViewPager.setAdapter(mPagerAdapter);
@@ -298,4 +299,14 @@ public class ImagePagerFragment extends Fragment {
     return mViewPager.getCurrentItem();
   }
 
+  @Override public void onDestroy() {
+    super.onDestroy();
+
+    paths.clear();
+    paths = null;
+
+    if (mViewPager != null) {
+      mViewPager.setAdapter(null);
+    }
+  }
 }
