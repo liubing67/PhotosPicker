@@ -64,6 +64,7 @@ public class RequestPermissionsUtil {
             ActivityCompat.requestPermissions(activity, new String[]{permiss},
                     requestCode);
             Log.e("222222222", "请求权限");
+            isper=false;
             return isper;
         } else {
             //请求成功之后

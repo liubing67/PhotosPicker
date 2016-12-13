@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import me.iwf.photopicker.R;
+import me.iwf.photopicker.utils.ImageCaptureManager;
 
 /**
  * 项目名称：BingYao
@@ -61,33 +63,26 @@ public class OnlyCameraUtil {
     private static String path;
     private static byte[] mContent;
     private static boolean crop;
-
+    private ImageCaptureManager captureManager;
     public OnlyCameraUtil(Activity conten) {
         this.activity = conten;
+        captureManager = new ImageCaptureManager(activity);
     }
 
     /**
      * 调用系统相机拍照
      */
-    public static void takePhoto(int requestCode, boolean iscrop) {
+    public void takePhoto(int requestCode, boolean iscrop) {
         crop = iscrop;
-        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        File vFile = new File(Environment.getExternalStorageDirectory()
-                , String.valueOf(System.currentTimeMillis())
-                + ".png");//
-        if (!vFile.exists()) {
-            File vDirPath = vFile.getParentFile();
-            vDirPath.mkdirs();
-        } else {
-            if (vFile.exists()) {
-                vFile.delete();
-            }
+        Intent intent = null;
+        try {
+            intent=captureManager.dispatchTakePictureIntent();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        path = vFile.getPath();
-        Uri cameraUri = Uri.fromFile(vFile);
-        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
-        activity.startActivityForResult(openCameraIntent, requestCode);
+        path=captureManager.getCurrentPhotoPath();
+        activity.startActivityForResult(intent, requestCode);
     }
 
     /**
@@ -109,6 +104,7 @@ public class OnlyCameraUtil {
      */
     public static void startPhotoZoom(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setDataAndType(uri, "image/*");
         //下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
         intent.putExtra("crop", "true");
@@ -119,9 +115,27 @@ public class OnlyCameraUtil {
         intent.putExtra("outputX", 250);
         intent.putExtra("outputY", 250);
         intent.putExtra("return-data", true);
+        intent.putExtra("scale", true);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        intent.putExtra("noFaceDetection", true); // no face detection
         activity.startActivityForResult(intent, GET_BY_CROP);
     }
-
+//    File file=new File(Environment.getExternalStorageDirectory(), "/temp/"+System.currentTimeMillis() + ".jpg");
+//    if (!file.getParentFile().exists())file.getParentFile().mkdirs();
+//    Uri outputUri = FileProvider.getUriForFile(context, "com.jph.takephoto.fileprovider",file);
+//    Uri imageUri=FileProvider.getUriForFile(context, "com.jph.takephoto.fileprovider", new File("/storage/emulated/0/temp/1474960080319.jpg");//通过FileProvider创建一个content类型的Uri
+//    Intent intent = new Intent("com.android.camera.action.CROP");
+//    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//    intent.setDataAndType(imageUri, "image/*");
+//    intent.putExtra("crop", "true");
+//    intent.putExtra("aspectX", 1);
+//    intent.putExtra("aspectY", 1);
+//    intent.putExtra("scale", true);
+//    intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);
+//    intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+//    intent.putExtra("noFaceDetection", true); // no face detection
+//    startActivityForResult(intent,1008);
     /**
      * 保存裁剪之后的图片数据
      *
@@ -162,7 +176,7 @@ public class OnlyCameraUtil {
             if (requestCode == GET_BY_ALBUM) { ///选择从图库中的照片
                 ContentResolver resolver = activity.getContentResolver();
                 try {
-                    if (crop) {
+                    if (crop) {//是否剪切
                         startPhotoZoom(data.getData());
                     } else {
                         // 获得图片的uri
@@ -198,13 +212,8 @@ public class OnlyCameraUtil {
                 }
             } else {///选择从相机拍照的照片
                 if (!TextUtils.isEmpty(path)) {
-//                    File temp = new File(Environment.getExternalStorageDirectory()
-//                            + "/secondpayheade.png");
-//                    if (temp != null) {
-//                        startPhotoZoom(Uri.fromFile(temp));
-//                    }
                     if (crop) {
-                        startPhotoZoom(Uri.fromFile(new File(path)));
+                        startPhotoZoom(FileProvider.getUriForFile(activity, "com.jph.takephoto.fileprovider",new File(path)));
                     } else {
                         Glide.with(activity)
                                 .load(new File(path))
