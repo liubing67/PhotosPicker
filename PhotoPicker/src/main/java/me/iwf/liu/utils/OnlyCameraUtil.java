@@ -78,7 +78,7 @@ public class OnlyCameraUtil {
 
         Intent intent = null;
         try {
-            intent=captureManager.dispatchTakePictureIntent();
+            intent=captureManager.dispatchTakePictureIntent(null);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -230,7 +230,7 @@ public class PhotoPickerFragment extends Fragment {
 
   private void openCamera() {
     try {
-      Intent intent = captureManager.dispatchTakePictureIntent();
+      Intent intent = captureManager.dispatchTakePictureIntent(null);
       startActivityForResult(intent, ImageCaptureManager.REQUEST_TAKE_PHOTO);
     } catch (IOException e) {
       e.printStackTrace();

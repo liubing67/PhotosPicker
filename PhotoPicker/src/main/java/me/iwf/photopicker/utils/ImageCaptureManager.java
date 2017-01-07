@@ -35,10 +35,16 @@ public class ImageCaptureManager {
     this.mContext = mContext;
   }
 
-  private File createImageFile() throws IOException {
+  private File createImageFile(String imageName) throws IOException {
     // Create an image file name
-    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
-    String imageFileName = "JPEG_" + timeStamp + ".jpg";
+    String imageFileName;
+    if (TextUtils.isEmpty(imageName))
+    {
+      String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
+      imageFileName= "JPEG_" + timeStamp + ".jpg";
+    }else {
+      imageFileName=imageName;
+    }
     File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
     if (!storageDir.exists()) {
@@ -56,12 +62,12 @@ public class ImageCaptureManager {
   }
 
 
-  public Intent dispatchTakePictureIntent() throws IOException {
+  public Intent dispatchTakePictureIntent(String imageName) throws IOException {
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
     // Ensure that there's a camera activity to handle the intent
     if (takePictureIntent.resolveActivity(mContext.getPackageManager()) != null) {
       // Create the File where the photo should go
-      File file = createImageFile();
+      File file = createImageFile(imageName);
       Uri photoFile;
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         String authority = mContext.getApplicationInfo().packageName + ".provider";
